@@ -3,25 +3,25 @@ package qstrader;
 public class Position {
 	
 	String  action;
-	Object ticker;
+	String ticker;
 	long quantity;
-	double init_price;
-	double init_commission;
-	double realised_pnl;
-	double unrealised_pnl;
+	long init_price;
+	long init_commission;
+	long realised_pnl;
+	long unrealised_pnl;
 	long buys;
 	long sells;
-	double avg_bot;
-	double avg_sld;
-	double total_bot;
-	double total_sld;
-	double total_commission;
-	double market_value;
-	double cost_basis;
-	double net_incl_comm;
+	long avg_bot;
+	long avg_sld;
+	long total_bot;
+	long total_sld;
+	long total_commission;
+	long market_value;
+	long cost_basis;
+	long net_incl_comm;
 	long net;
-	double net_total;
-	double avg_price;
+	long net_total;
+	long avg_price;
 	
 	/**
 	 *  Set up the initial "account" of the Position to be
@@ -38,8 +38,8 @@ public class Position {
 	 * @param bid
 	 * @param ask
 	 */
-	public Position(String action, String ticker, long init_quantity, double init_price, double init_commission,
-			double bid, double ask) {
+	public Position(String action, String ticker, long init_quantity, long init_price, long init_commission,
+			long bid, long ask) {
         this.action = action;
         this.ticker = ticker;
         this.quantity = init_quantity;
@@ -106,15 +106,15 @@ public class Position {
      * @date 2016年12月16日 下午3:43:53
      * @version V1.0
      */
-    public void update_market_value(double bid, double ask) {
-        double midpoint = (bid + ask) / 2;
+    public void update_market_value(long bid, long ask) {
+        long midpoint = (bid + ask) / 2;
         this.market_value = this.quantity * midpoint * sign(this.net);
         this.unrealised_pnl = this.market_value - this.cost_basis;
         //this.realised_pnl = this.market_value + this.net_incl_comm;
     }
 
     //计算各元素的正负号：1（正数）、0（零）、-1（负数）
-	private int sign(double value) {
+	private int sign(long value) {
 		if (value > 0) {
 			return 1;
 		}
@@ -136,7 +136,7 @@ public class Position {
 	 * @date 2016年12月16日 下午3:45:29
 	 * @version V1.0
 	 */
-    public void transact_shares(String action,long quantity,double price,double commission){
+    public void transact_shares(String action,long quantity,long price,long commission){
         this.total_commission += commission;
 
 		// Adjust total bought and sold
@@ -176,5 +176,81 @@ public class Position {
     
     public long getQuantity() {
 		return quantity;
+	}
+    
+    public String getAction() {
+		return action;
+	}
+    
+    public String getTicker() {
+		return ticker;
+	}
+
+	public long getInit_price() {
+		return init_price;
+	}
+
+	public long getInit_commission() {
+		return init_commission;
+	}
+
+	public long getRealised_pnl() {
+		return realised_pnl;
+	}
+
+	public long getUnrealised_pnl() {
+		return unrealised_pnl;
+	}
+
+	public long getBuys() {
+		return buys;
+	}
+
+	public long getSells() {
+		return sells;
+	}
+
+	public long getAvg_bot() {
+		return avg_bot;
+	}
+
+	public long getAvg_sld() {
+		return avg_sld;
+	}
+
+	public long getTotal_bot() {
+		return total_bot;
+	}
+
+	public long getTotal_sld() {
+		return total_sld;
+	}
+
+	public long getTotal_commission() {
+		return total_commission;
+	}
+
+	public long getMarket_value() {
+		return market_value;
+	}
+
+	public long getCost_basis() {
+		return cost_basis;
+	}
+
+	public long getNet_incl_comm() {
+		return net_incl_comm;
+	}
+
+	public long getNet() {
+		return net;
+	}
+
+	public long getNet_total() {
+		return net_total;
+	}
+
+	public long getAvg_price() {
+		return avg_price;
 	}
 }

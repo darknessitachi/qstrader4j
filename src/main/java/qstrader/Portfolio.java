@@ -12,14 +12,14 @@ import qstrader.price_handler.AbstractTickPriceHandler;
 
 public class Portfolio {
         
-    private int unrealised_pnl;
+    private long unrealised_pnl;
 	public AbstractPriceHandler price_handler;
-	private double init_cash;
-	private double equity;
-	private double cur_cash;
+	private long init_cash;
+	private long equity;
+	private long cur_cash;
 	public HashMap<String, Position> positions;
 	private ArrayList<Position> closed_positions;
-	private int realised_pnl;
+	private long realised_pnl;
 	
 	/**
 	 *  On creation, the Portfolio object contains no
@@ -32,7 +32,7 @@ public class Portfolio {
 	 * @param price_handler
 	 * @param cash
 	 */
-	public Portfolio(AbstractPriceHandler price_handler, double cash) {
+	public Portfolio(AbstractPriceHandler price_handler, long cash) {
 		this.price_handler = price_handler;
 		this.init_cash = cash;
 		this.equity = cash;
@@ -51,33 +51,31 @@ public class Portfolio {
 	 * @date 2016年12月16日 下午3:25:25
 	 * @version V1.0
 	 */
-    public void _update_portfolio() {
+	private void _update_portfolio() {
         this.unrealised_pnl = 0;
         this.equity = this.realised_pnl;
         this.equity += this.init_cash;
-
+        
         for (Entry<String, Position> positionEntry : this.positions.entrySet()) {
         	String ticker= positionEntry.getKey();
         	Position pt = positionEntry.getValue();
         	
-        	double bid, ask;
+        	long bid, ask;
             if (this.price_handler.istick()) {
             	AbstractTickPriceHandler tickPriceHandler = (AbstractTickPriceHandler)this.price_handler;
-            	TwoTuple<Double, Double> bidAsk = tickPriceHandler.get_best_bid_ask(ticker);
-            	bid = Double.valueOf(bidAsk.first);
-            	ask = Double.valueOf(bidAsk.second);
+            	TwoTuple<Long, Long> bidAsk = tickPriceHandler.get_best_bid_ask(ticker);
+            	bid = bidAsk.first;
+            	ask = bidAsk.second;
             }else{
             	AbstractBarPriceHandler tickPriceHandler = (AbstractBarPriceHandler)this.price_handler;
-                double close_price = tickPriceHandler.get_last_close(ticker);
+                long close_price = tickPriceHandler.get_last_close(ticker);
                 bid = close_price;
                 ask = close_price;
             }
             
             pt.update_market_value(bid, ask);
             this.unrealised_pnl += pt.unrealised_pnl;
-            this.equity += (
-                pt.market_value - pt.cost_basis + pt.realised_pnl
-            );
+			this.equity += (pt.market_value - pt.cost_basis + pt.realised_pnl);
         }
     }
     
@@ -94,26 +92,26 @@ public class Portfolio {
      * @date 2016年12月14日 下午4:34:52
      * @version V1.0
      */
-	public void _add_position(String action, String ticker, long quantity, double price, double commission) {
+    private void _add_position(String action, String ticker, long quantity, long price, long commission) {
         if (this.positions.containsKey(ticker)) {
-        	double bid, ask;
-            if (this.price_handler.istick()) {
-            	AbstractTickPriceHandler tickPriceHandler = (AbstractTickPriceHandler)this.price_handler;
-                TwoTuple<Double, Double> bidAndAsk = tickPriceHandler.get_best_bid_ask(ticker);
-                bid = Double.valueOf(bidAndAsk.first);
-                ask = Double.valueOf(bidAndAsk.second);
-            } else {
-            	AbstractBarPriceHandler barPriceHandler = (AbstractBarPriceHandler)this.price_handler;
-                double close_price = barPriceHandler.get_last_close(ticker);
-                bid = close_price;
-                ask = close_price;
-            }
-			Position position = new Position(action, ticker, quantity, price, commission, bid, ask);
-            this.positions.put(ticker, position); 
-            this._update_portfolio();
-        } else {
-			System.out.println(String.format("Ticker %s is already in the positions list. Could not add a new position.", ticker));
+        	System.out.println(String.format("Ticker %s is already in the positions list. Could not add a new position.", ticker));
+        	return;
         }
+		long bid, ask;
+		if (this.price_handler.istick()) {
+			AbstractTickPriceHandler tickPriceHandler = (AbstractTickPriceHandler) this.price_handler;
+			TwoTuple<Long, Long> bidAndAsk = tickPriceHandler.get_best_bid_ask(ticker);
+			bid = bidAndAsk.first;
+			ask = bidAndAsk.second;
+		} else {
+			AbstractBarPriceHandler barPriceHandler = (AbstractBarPriceHandler) this.price_handler;
+			long close_price = barPriceHandler.get_last_close(ticker);
+			bid = close_price;
+			ask = close_price;
+		}
+		Position position = new Position(action, ticker, quantity, price, commission, bid, ask);
+		this.positions.put(ticker, position);
+		this._update_portfolio();
     }
     
 	/**
@@ -129,19 +127,19 @@ public class Portfolio {
 	 * @date 2016年12月14日 下午4:39:15
 	 * @version V1.0
 	 */
-	public void _modify_position(String action, String ticker, long quantity, double price, double commission) {
+	private void _modify_position(String action, String ticker, long quantity, long price, long commission) {
     	if(this.positions.containsKey(ticker)) {
     		Position position = this.positions.get(ticker);
 			position.transact_shares(action, quantity, price, commission);
-            double bid, ask;
+            long bid, ask;
             if( this.price_handler.istick()) {
             	AbstractTickPriceHandler tickPriceHandler = (AbstractTickPriceHandler)this.price_handler;
-                TwoTuple<Double, Double> bidAndAsk = tickPriceHandler.get_best_bid_ask(ticker);
-                bid = Double.valueOf(bidAndAsk.first);
-                ask = Double.valueOf(bidAndAsk.second);
+                TwoTuple<Long, Long> bidAndAsk = tickPriceHandler.get_best_bid_ask(ticker);
+                bid = bidAndAsk.first;
+                ask = bidAndAsk.second;
             } else {
                 AbstractBarPriceHandler barPriceHandler = (AbstractBarPriceHandler)this.price_handler;
-                double close_price = barPriceHandler.get_last_close(ticker);
+                long close_price = barPriceHandler.get_last_close(ticker);
                 bid = close_price;
                 ask = close_price;
             }
@@ -150,6 +148,7 @@ public class Portfolio {
             if (position.quantity == 0) {
                 Position closed = this.positions.remove(ticker);
                 this.realised_pnl += closed.realised_pnl;
+                System.out.println(this.realised_pnl);
                 this.closed_positions.add(closed);
             }
             this._update_portfolio();
@@ -170,11 +169,11 @@ public class Portfolio {
      * @date 2016年12月14日 下午4:43:28
      * @version V1.0
      */
-	public void transact_position(String action, String ticker, long quantity, double price, double commission) {
+	public void transact_position(String action, String ticker, long quantity, long price, long commission) {
 		if (action.equals("BOT")) {
-			this.cur_cash -= ((quantity * price) + commission);
+			this.cur_cash -= quantity * price + commission;
 		} else if (action.equals("SLD")) {
-			this.cur_cash += ((quantity * price) - commission);
+			this.cur_cash += quantity * price - commission;
 		}
         if(this.positions.containsKey(ticker)) {
 			this._modify_position(action, ticker, quantity, price, commission);
@@ -183,7 +182,35 @@ public class Portfolio {
         }
     }
 	
-	public double getEquity() {
+	public long getEquity() {
 		return equity;
+	}
+
+	public long getUnrealised_pnl() {
+		return unrealised_pnl;
+	}
+
+	public AbstractPriceHandler getPrice_handler() {
+		return price_handler;
+	}
+
+	public long getInit_cash() {
+		return init_cash;
+	}
+
+	public long getCur_cash() {
+		return cur_cash;
+	}
+
+	public HashMap<String, Position> getPositions() {
+		return positions;
+	}
+
+	public ArrayList<Position> getClosed_positions() {
+		return closed_positions;
+	}
+
+	public long getRealised_pnl() {
+		return realised_pnl;
 	}
 }

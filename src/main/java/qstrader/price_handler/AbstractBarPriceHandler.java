@@ -41,14 +41,14 @@ public abstract class AbstractBarPriceHandler extends AbstractPriceHandler {
      * @date 2016年12月14日 下午4:03:22
      * @version V1.0
      */
-    public double get_last_close(String ticker){
+    public long get_last_close(String ticker){
         if(this.tickers.containsKey(ticker)) {
         	BarEvent barEvent = (BarEvent)this.tickers.get(ticker);
-            double close_price = barEvent.getClose_price();
+        	long close_price = barEvent.getClose_price();
             return close_price;
         }else{
            System.out.println(String.format("Close price for ticker %s is not available from the YahooDailyBarPriceHandler.", ticker));
-            return 0.0;
+            return 0;
         }
     }
 }
