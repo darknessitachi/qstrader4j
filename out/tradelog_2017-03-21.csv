@@ -1,0 +1,2 @@
+timestamp,ticker,action,quantity,exchange,price,commission
+2000-01-03T00:00,SPY,BOT,100,ARCA,1454375000,10000000

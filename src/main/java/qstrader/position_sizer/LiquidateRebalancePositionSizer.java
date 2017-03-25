@@ -25,9 +25,9 @@ import qstrader.order.SuggestedOrder;
  */
 public class LiquidateRebalancePositionSizer implements AbstractPositionSizer {
 
-    private Map<String, Integer> ticker_weights;
+    private Map<String, Double> ticker_weights;
 
-	public LiquidateRebalancePositionSizer(Map<String, Integer> ticker_weights){
+	public LiquidateRebalancePositionSizer(Map<String, Double> ticker_weights){
         this.ticker_weights = ticker_weights;
     }
     
@@ -52,7 +52,7 @@ public class LiquidateRebalancePositionSizer implements AbstractPositionSizer {
 				initial_order.setQuantity(0);
 			}
 		} else {
-			int weight = this.ticker_weights.get(ticker);
+			Double weight = this.ticker_weights.get(ticker);
 			// Determine total portfolio value, work out dollar weight
 			// and finally determine integer quantity of shares to purchase
 			BarEvent barEvent = (BarEvent) portfolio.price_handler.tickers.get(ticker);

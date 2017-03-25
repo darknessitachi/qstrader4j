@@ -1,6 +1,8 @@
 package qstrader.price_handler.iterator;
 
-import com.github.rapidark.framework.collection.DataRow;
+import java.time.LocalDateTime;
+
+import com.abigdreamer.ark.framework.collection.DataRow;
 
 import qstrader.PriceParser;
 import qstrader.event.TickEvent;
@@ -22,12 +24,12 @@ public abstract class AbstractTickEventIterator extends AbstractPriceEventIterat
 	 * @date 2016年12月14日 下午5:15:19
 	 * @version V1.0
 	 */
-    public TickEvent _create_event(String time,String ticker,DataRow row) {
+    public TickEvent _create_event(LocalDateTime time,String ticker,DataRow row) {
 		if (row == null) {
 			throw new EmptyTickEvent(String.format("row %s %s %s can't be convert to TickEvent", time, ticker, row));
 		}
-		double bid = PriceParser.parse(row.getString("Bid"));
-		double ask = PriceParser.parse(row.getString("Ask"));
+		long bid = PriceParser.parse(row.getString("Bid"));
+		long ask = PriceParser.parse(row.getString("Ask"));
 		TickEvent tev = new TickEvent(ticker, time, bid, ask);
 		return tev;
     }

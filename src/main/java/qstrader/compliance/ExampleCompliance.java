@@ -3,7 +3,7 @@ package qstrader.compliance;
 import java.io.File;
 import java.time.LocalDate;
 
-import com.github.rapidark.framework.utility.FileUtil;
+import com.abigdreamer.ark.framework.utility.FileUtil;
 import com.google.common.base.Joiner;
 
 import qstrader.Config;
@@ -29,10 +29,10 @@ public class ExampleCompliance implements AbstractCompliance {
 
 	 * @param config
 	 */
-    public ExampleCompliance(String dir) {
-        this.csv_filename = dir + File.separator + "tradelog_" + LocalDate.now() + ".csv";
+    public ExampleCompliance(Config config) {
+    	this.csv_filename = config.OUTPUT_DIR + File.separator + "tradelog_" + LocalDate.now() + ".csv";
 
-        FileUtil.mkdir(dir);
+        FileUtil.mkdir(config.OUTPUT_DIR);
 
 		// Remove the previous CSV file
 		FileUtil.delete(this.csv_filename);
@@ -40,10 +40,6 @@ public class ExampleCompliance implements AbstractCompliance {
 		// Write new file header
 		String header = join("timestamp", "ticker", "action", "quantity", "exchange", "price", "commission");
         FileUtil.writeText(this.csv_filename, header);
-    }
-
-    public ExampleCompliance(Config config) {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

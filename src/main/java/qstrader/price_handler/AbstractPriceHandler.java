@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
-import com.github.rapidark.framework.collection.DataTable;
+import com.abigdreamer.ark.framework.collection.DataTable;
 
 import qstrader.event.Event;
 import qstrader.event.TickerEvent;
@@ -32,6 +32,9 @@ public abstract class AbstractPriceHandler {
 	public boolean continue_backtest;
 	public Map<String, TickerEvent> tickers = new HashMap<>();
 	public Map<String, DataTable> tickers_data = new HashMap<>();
+	
+	public AbstractPriceHandler() {
+	}
 	
 	public boolean istick() {
         return false;

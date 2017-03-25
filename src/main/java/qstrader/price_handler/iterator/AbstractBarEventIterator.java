@@ -1,6 +1,8 @@
 package qstrader.price_handler.iterator;
 
-import com.github.rapidark.framework.collection.DataRow;
+import java.time.LocalDateTime;
+
+import com.abigdreamer.ark.framework.collection.DataRow;
 
 import qstrader.PriceParser;
 import qstrader.event.BarEvent;
@@ -13,7 +15,7 @@ import qstrader.event.BarEvent;
  */
 public abstract class AbstractBarEventIterator extends AbstractPriceEventIterator {
 	
-    public BarEvent _create_event(String time,int period,String ticker,DataRow row){
+    public BarEvent _create_event(LocalDateTime time,int period,String ticker,DataRow row){
 //        """
 //        Obtain all elements of the bar from a row of dataframe
 //        and return a BarEvent

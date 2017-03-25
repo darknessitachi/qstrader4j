@@ -1,11 +1,12 @@
 package qstrader.price_handler.iterator.pandas;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import com.github.rapidark.framework.collection.DataRow;
-import com.github.rapidark.framework.collection.DataTable;
+import com.abigdreamer.ark.framework.collection.DataRow;
+import com.abigdreamer.ark.framework.collection.DataTable;
 
 import qstrader.event.BarEvent;
 import qstrader.price_handler.iterator.AbstractBarEventIterator;
@@ -86,10 +87,11 @@ class PandasDataFrameBarEventIterator extends AbstractBarEventIterator {
     	if(this._itr_bar.hasNext()) {
 	    	DataRow row = this._itr_bar.next();
 	        String date = row.getString("Date");
-	        BarEvent price_event = this._create_event(date, this.period, this.ticker, row);
+	        
+	        BarEvent price_event = this._create_event(LocalDateTime.parse(date), this.period, this.ticker, row);
 	        return price_event;
     	} else {
-    		BarEvent price_event = this._create_event("", this.period, this.ticker, null);
+    		BarEvent price_event = this._create_event(LocalDateTime.MIN, this.period, this.ticker, null);
 	        return price_event;
     	}
     }

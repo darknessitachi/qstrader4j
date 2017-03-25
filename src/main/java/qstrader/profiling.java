@@ -12,7 +12,7 @@ public class profiling {
 	public static String s_speed(Event time_event, long ticks, long t0) {
 		long sp = speed(ticks, t0);
 		String s_typ = time_event.type.toString() + "S";
-		return String.format("%d %s processed @ %f %s/s", ticks, s_typ, sp, s_typ);
+		return String.format("%d %s processed @ %s %s/s", ticks, s_typ, sp, s_typ);
 	}
 
 }

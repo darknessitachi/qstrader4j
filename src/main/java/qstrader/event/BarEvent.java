@@ -1,11 +1,12 @@
 package qstrader.event;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.abigdreamer.ark.framework.collection.Mapx;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.rapidark.framework.collection.Mapx;
 import com.google.common.collect.Maps;
 
 import qstrader.PriceParser;
@@ -44,13 +45,12 @@ public class BarEvent extends TickerEvent {
 //            (e.g. back-adjustment) of the bar
 	 */
     public BarEvent(
-        String ticker,String time,int period,
+        String ticker,LocalDateTime time,int period,
         long open_price, long high_price,long  low_price,
         long close_price,long  volume, long adj_close_price
     ) {
+    	super(ticker, time);
         this.type = EventType.BAR;
-        this.ticker = ticker;
-        this.time = time;
         this.period = period;
         this.open_price = open_price;
         this.high_price = high_price;
@@ -108,40 +108,24 @@ public class BarEvent extends TickerEvent {
     
     @Override
     public String toString() {
-		String open_price = PriceParser.display(this.open_price);
-		String high_price = PriceParser.display(this.high_price);
-		String low_price = PriceParser.display(this.low_price);
-		String close_price = PriceParser.display(this.close_price);
-		String adj_close_price = PriceParser.display(this.adj_close_price);
+		double open_price = PriceParser.display(this.open_price);
+		double high_price = PriceParser.display(this.high_price);
+		double low_price = PriceParser.display(this.low_price);
+		double close_price = PriceParser.display(this.close_price);
+		double adj_close_price = PriceParser.display(this.adj_close_price);
     	
 	 String format_str = String.format("Type: %s, Ticker: %s, Time: %s, Period: %s, " +
 	            "Open: %s, High: %s, Low: %s, Close: %s, " +
 	            "Adj Close: %s, Volume: %s", 
 	                this.type, this.ticker, this.time,
-	                this.period_readable, this.open_price,
-	                this.high_price, this.low_price,
-	                this.close_price, this.adj_close_price,
+	                this.period_readable, open_price,
+	                high_price, low_price,
+	                close_price, adj_close_price,
 	                this.volume
 	            );
 	        return format_str;
     }
     
-	public String getTicker() {
-		return ticker;
-	}
-
-	public void setTicker(String ticker) {
-		this.ticker = ticker;
-	}
-
-	public String getTime() {
-		return time;
-	}
-
-	public void setTime(String time) {
-		this.time = time;
-	}
-
 	public int getPeriod() {
 		return period;
 	}

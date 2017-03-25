@@ -1,8 +1,10 @@
 package qstrader.statistics;
 
-import com.github.rapidark.framework.collection.Mapx;
+import java.time.LocalDateTime;
 
-import qstrader.PortfolioHandler;
+import com.abigdreamer.ark.framework.collection.Mapx;
+
+import qstrader.Portfolio;
 
 /**
  *  统计
@@ -33,7 +35,7 @@ public interface AbstractStatistics {
 	 * @date 2016年12月16日 下午3:05:54
 	 * @version V1.0
 	 */
-    void update(String time, PortfolioHandler portfolio_handler);
+    void update(LocalDateTime time, Portfolio portfolio);
 
     /**
      * Return a dict containing all statistics.

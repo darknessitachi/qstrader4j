@@ -1,7 +1,11 @@
 package qstrader.statistics;
 
-import com.github.rapidark.framework.collection.Mapx;
+import java.time.LocalDateTime;
 
+import com.abigdreamer.ark.framework.collection.Mapx;
+
+import qstrader.Config;
+import qstrader.Portfolio;
 import qstrader.PortfolioHandler;
 
 //from .base import AbstractStatistics
@@ -24,8 +28,12 @@ import qstrader.PortfolioHandler;
 //
 public class TearsheetStatistics implements AbstractStatistics {
 
+	public TearsheetStatistics(Config config, PortfolioHandler portfolio_handler, String title, Object benchmark) {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
-	public void update(String time, PortfolioHandler portfolio_handler) {
+	public void update(LocalDateTime time, Portfolio portfolio_handler) {
 		// TODO Auto-generated method stub
 		
 	}

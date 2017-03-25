@@ -2,6 +2,8 @@ package qstrader.price_handler;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import com.github.rapidark.framework.collection.DataRow;
-import com.github.rapidark.framework.collection.DataTable;
-import com.github.rapidark.framework.collection.Filter;
+import com.abigdreamer.ark.framework.collection.DataRow;
+import com.abigdreamer.ark.framework.collection.DataTable;
+import com.abigdreamer.ark.framework.collection.Filter;
 
 import qstrader.PriceParser;
 import qstrader.event.BarEvent;
@@ -64,13 +66,16 @@ public class YahooDailyCsvBarPriceHandler extends AbstractBarPriceHandler {
         this.continue_backtest = true;
         this.tickers = new HashMap<>();
         this.tickers_data = new HashMap<>();
+        
+        this.start_date = start_date;
+        this.end_date = end_date;
+        
         if(!init_tickers.isEmpty()) {
             for(String ticker : init_tickers) {
                 this.subscribe_ticker(ticker);
             }
         }
-        this.start_date = start_date;
-        this.end_date = end_date;
+        
         this.bar_stream = this._merge_sort_ticker_data().iterator();
         this.calc_adj_returns = calc_adj_returns;
 		if (this.calc_adj_returns) {
@@ -89,7 +94,8 @@ public class YahooDailyCsvBarPriceHandler extends AbstractBarPriceHandler {
 	 */
     public boolean _open_ticker_price_csv(String ticker){
         String ticker_path = this.csv_dir + ticker + ".csv";
-        DataTable dataTable = YahooFinance.getHistoricalPrices(ticker, YahooFinance.DEFAULT_FROM.toInstant(), Instant.now());
+        DataTable dataTable = YahooFinance.getHistoricalPrices(ticker, this.start_date, this.end_date); 
+//        		YahooFinance.DEFAULT_FROM.toInstant(), Instant.now());
         dataTable.insertColumn("Ticker", ticker);
         
         this.tickers_data.put(ticker, dataTable);
@@ -167,7 +173,7 @@ public class YahooDailyCsvBarPriceHandler extends AbstractBarPriceHandler {
      * @date 2016年12月16日 下午4:24:36
      * @version V1.0
      */
-    public BarEvent _create_event(String time,int period,String ticker,DataRow row){
+    public BarEvent _create_event(LocalDateTime time,int period,String ticker,DataRow row){
         long open_price = PriceParser.parse(row.getString("Open"));
         long high_price = PriceParser.parse(row.getString("High"));
         long low_price = PriceParser.parse(row.getString("Low"));
@@ -177,7 +183,7 @@ public class YahooDailyCsvBarPriceHandler extends AbstractBarPriceHandler {
 		BarEvent bev = new BarEvent(ticker, time, period, open_price, high_price, low_price, close_price, volume, adj_close_price);
         return bev;
     }
-    
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     /**
      * Place the next BarEvent onto the event queue.
      */
@@ -194,7 +200,8 @@ public class YahooDailyCsvBarPriceHandler extends AbstractBarPriceHandler {
 		int period = 86400; // Seconds in a day
 		// Create the tick event for the queue
 		String time = row.getString("Date");
-		BarEvent bev = this._create_event(time, period, ticker, row);
+		
+		BarEvent bev = this._create_event(LocalDateTime.parse(time + " 00:00:00", formatter), period, ticker, row);
 		// Store event
 		this._store_event(bev);
 		// Send event to queue

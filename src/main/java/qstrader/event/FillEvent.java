@@ -1,5 +1,7 @@
 package qstrader.event;
 
+import java.time.LocalDateTime;
+
 /**
  *  Encapsulates the notion of a filled order, as returned
     from a brokerage. Stores the quantity of an instrument
@@ -14,13 +16,13 @@ package qstrader.event;
  */
 public class FillEvent extends Event {
 
-    private String timestamp;
+    private LocalDateTime timestamp;
 	private String ticker;
 	private String action;
 	private long quantity;
 	private String exchange;
-	private double price;
-	private double commission;
+	private long price;
+	private long commission;
 
 	/**
 	 * Initialises the FillEvent object.
@@ -33,10 +35,10 @@ public class FillEvent extends Event {
 	 * @param commission - The brokerage commission for carrying out the trade.
 	 */
 	public  FillEvent(
-        String timestamp,String ticker,
+			LocalDateTime timestamp,String ticker,
         String   action,long quantity,
-        String exchange, double price,
-        double commission
+        String exchange, long price,
+        long commission
     ) {
         this.type = EventType.FILL;
         this.timestamp = timestamp;
@@ -48,11 +50,11 @@ public class FillEvent extends Event {
         this.commission = commission;
     }
 
-	public String getTimestamp() {
+	public LocalDateTime getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(String timestamp) {
+	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
 
@@ -88,19 +90,19 @@ public class FillEvent extends Event {
 		this.exchange = exchange;
 	}
 
-	public double getPrice() {
+	public long getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(long price) {
 		this.price = price;
 	}
 
-	public double getCommission() {
+	public long getCommission() {
 		return commission;
 	}
 
-	public void setCommission(double commission) {
+	public void setCommission(long commission) {
 		this.commission = commission;
 	}
 }

@@ -3,14 +3,15 @@ package qstrader.price_handler;
 import static java.lang.String.format;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rapidark.framework.collection.DataTable;
-import com.github.rapidark.framework.collection.DataTableUtil;
+import com.abigdreamer.ark.framework.collection.DataTable;
+import com.abigdreamer.ark.framework.collection.DataTableUtil;
 
 public class YahooFinance {
 	
@@ -22,7 +23,7 @@ public class YahooFinance {
 //    public static final CsvReader.ParseFunction<Double> OPEN_COLUMN = doubleColumn("Open");
 //    public static final CsvReader.ParseFunction<Double> ADJ_COLUMN = doubleColumn("Adj Close");
 //    public static final CsvReader.ParseFunction<Double> VOLUME_COLUMN = doubleColumn("Volume");
-    public static final OffsetDateTime DEFAULT_FROM = OffsetDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+    public static final LocalDate DEFAULT_FROM = LocalDate.of(2016, 1, 1);
 
     private static final Logger log = LoggerFactory.getLogger(YahooFinance.class);
 
@@ -39,11 +40,13 @@ public class YahooFinance {
 //        return csvToDoubleSeries(csv, symbol);
 //    }
 
-    private static String getHistoricalPricesCsv(String symbol, Instant from, Instant to) {
-		return Http.getResponseText(createHistoricalPricesUrl(symbol, from, to));
+    private static String getHistoricalPricesCsv(String symbol, LocalDate from, LocalDate to) {
+    	String url = createHistoricalPricesUrl(symbol, from, to);
+//    	System.out.println(url);
+		return Http.getResponseText(url);
     }
     
-    public static DataTable getHistoricalPrices(String symbol, Instant from, Instant to) {
+    public static DataTable getHistoricalPrices(String symbol, LocalDate from, LocalDate to) {
     	String csv = getHistoricalPricesCsv(symbol, from, to);;
     	DataTable dataTable = DataTableUtil.txtToDataTable(csv);
     	dataTable.sort("Date", "asc");
@@ -57,19 +60,19 @@ public class YahooFinance {
 //        return prices;
 //    }
 
-    private static String createHistoricalPricesUrl(String symbol, Instant from, Instant to) {
+    private static String createHistoricalPricesUrl(String symbol, LocalDate from, LocalDate to) {
         return format("http://ichart.yahoo.com/table.csv?s=%s&%s&%s&g=d&ignore=.csv", symbol, toYahooQueryDate(from, "abc"), toYahooQueryDate(to, "def"));
     }
 
-    private static String toYahooQueryDate(Instant instant, String names) {
-        OffsetDateTime time = instant.atOffset(ZoneOffset.UTC);
+    private static String toYahooQueryDate(LocalDate instant, String names) {
+        LocalDate time = instant;//instant.atOffset(ZoneOffset.UTC);
         String[] strings = names.split("");
         return format("%s=%d&%s=%d&%s=%d", strings[0], time.getMonthValue() - 1, strings[1], time.getDayOfMonth(), strings[2], time.getYear());
     }
     
     public static void main(String[] args) {
     	String symbol = "GOOG";
-    	DataTable dataTable = YahooFinance.getHistoricalPrices(symbol, DEFAULT_FROM.toInstant(), Instant.now());
+    	DataTable dataTable = YahooFinance.getHistoricalPrices(symbol, DEFAULT_FROM, LocalDate.now());
 		System.out.println(dataTable);
 	}
 }

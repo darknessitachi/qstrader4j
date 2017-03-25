@@ -1,11 +1,7 @@
-//import calendar
-//
-//from .base import AbstractStrategy
-//
-//from ..event import (SignalEvent, EventType)
 package qstrader.strategy;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
@@ -63,8 +59,8 @@ public class MonthlyLiquidateRebalanceStrategy extends AbstractStrategy {
      * @date 2016年12月14日 下午6:13:14
      * @version V1.0
      */
-    public boolean _end_of_month(String cur_time){
-    	LocalDate current = LocalDate.parse(cur_time);
+    public boolean _end_of_month(LocalDateTime cur_time){
+    	LocalDate current = cur_time.toLocalDate();
     	LocalDate lastDayOfMonth =current .with(TemporalAdjusters.lastDayOfMonth());
     	return current.equals(lastDayOfMonth);
     }

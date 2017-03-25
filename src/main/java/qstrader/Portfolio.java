@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.github.rapidark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.framework.collection.TwoTuple;
 
 import qstrader.price_handler.AbstractBarPriceHandler;
 import qstrader.price_handler.AbstractPriceHandler;
@@ -51,7 +51,7 @@ public class Portfolio {
 	 * @date 2016年12月16日 下午3:25:25
 	 * @version V1.0
 	 */
-	private void _update_portfolio() {
+	public void _update_portfolio() {
         this.unrealised_pnl = 0;
         this.equity = this.realised_pnl;
         this.equity += this.init_cash;
@@ -92,7 +92,7 @@ public class Portfolio {
      * @date 2016年12月14日 下午4:34:52
      * @version V1.0
      */
-    private void _add_position(String action, String ticker, long quantity, long price, long commission) {
+	public void _add_position(String action, String ticker, long quantity, long price, long commission) {
         if (this.positions.containsKey(ticker)) {
         	System.out.println(String.format("Ticker %s is already in the positions list. Could not add a new position.", ticker));
         	return;

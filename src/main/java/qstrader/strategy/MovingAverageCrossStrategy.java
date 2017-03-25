@@ -10,7 +10,7 @@ package qstrader.strategy;
 import java.util.List;
 import java.util.Queue;
 
-import com.github.rapidark.framework.collection.Queuex;
+import com.abigdreamer.ark.framework.collection.Queuex;
 
 import qstrader.event.BarEvent;
 import qstrader.event.Event;

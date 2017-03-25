@@ -1,5 +1,7 @@
 package qstrader.event;
 
+import java.time.LocalDateTime;
+
 /**
  * Handles the event of streaming a "Sentiment" value associated
     with a ticker. Can be used for a generic "date-ticker-sentiment"
@@ -9,8 +11,6 @@ package qstrader.event;
  */
 public class SentimentEvent extends TickerEvent {
 
-	private String timestamp;
-	private String ticker;
 	private String sentiment;
 	
 	/**
@@ -20,27 +20,10 @@ public class SentimentEvent extends TickerEvent {
 	 * @param sentiment - A string, float or integer value of "sentiment",
             e.g. "bullish", -1, 5.4, etc.
 	 */
-	public SentimentEvent(String timestamp,String  ticker,String  sentiment) {
+	public SentimentEvent(LocalDateTime timestamp,String  ticker,String  sentiment) {
+		super(ticker, timestamp);
 		this.type = EventType.SENTIMENT;
-		this.timestamp = timestamp;
-		this.ticker = ticker;
 		this.sentiment = sentiment;
-	}
-
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public String getTicker() {
-		return ticker;
-	}
-
-	public void setTicker(String ticker) {
-		this.ticker = ticker;
 	}
 
 	public String getSentiment() {

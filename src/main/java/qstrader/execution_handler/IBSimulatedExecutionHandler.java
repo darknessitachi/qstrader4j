@@ -1,8 +1,9 @@
 package qstrader.execution_handler;
 
+import java.time.LocalDateTime;
 import java.util.Queue;
 
-import com.github.rapidark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.framework.collection.TwoTuple;
 
 import qstrader.PriceParser;
 import qstrader.compliance.AbstractCompliance;
@@ -76,17 +77,17 @@ public class IBSimulatedExecutionHandler implements AbstractExecutionHandler {
 	@Override
     public void execute_order(OrderEvent orderEvent){
 		// # Obtain values from the OrderEvent
-		String timestamp = this.price_handler.get_last_timestamp(orderEvent.getTicker());
+		LocalDateTime timestamp = this.price_handler.get_last_timestamp(orderEvent.getTicker());
 		String ticker = orderEvent.getTicker();
 		String action = orderEvent.getAction();
 		long quantity = orderEvent.getQuantity();
 
 		// # Obtain the fill price
-		double fill_price;
+		long fill_price;
 		if (this.price_handler.istick()) {
 			AbstractTickPriceHandler tickPriceHandler = (AbstractTickPriceHandler) this.price_handler;
-			TwoTuple<Double, Double> bidAndAsk = tickPriceHandler.get_best_bid_ask(ticker);
-			double bid, ask;
+			TwoTuple<Long, Long> bidAndAsk = tickPriceHandler.get_best_bid_ask(ticker);
+			long bid, ask;
 			bid = bidAndAsk.first;
 			ask = bidAndAsk.second;
 			if (orderEvent.getAction().equals("BOT")) {
@@ -96,13 +97,13 @@ public class IBSimulatedExecutionHandler implements AbstractExecutionHandler {
 			}
 		} else {
 			AbstractBarPriceHandler barPriceHandler = (AbstractBarPriceHandler) this.price_handler;
-			double close_price = barPriceHandler.get_last_close(ticker);
+			long close_price = barPriceHandler.get_last_close(ticker);
 			fill_price = close_price;
 		}
             
 		// # Set a dummy exchange and calculate trade commission
 		String exchange = "ARCA";
-		double commission = this.calculate_ib_commission(quantity, fill_price);
+		long commission = this.calculate_ib_commission(quantity, fill_price);
 
 		// # Create the FillEvent and place on the events queue
 		FillEvent fill_event = new FillEvent(timestamp, ticker, action, quantity, exchange, fill_price, commission);

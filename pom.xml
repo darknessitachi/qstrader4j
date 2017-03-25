@@ -5,7 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   
   <properties>
-		<rapidark.version>0.4.0-SNAPSHOT</rapidark.version>
+		<ark.version>1.0.0-SNAPSHOT</ark.version>
 	</properties>
 
 	<dependencies>
@@ -40,9 +40,9 @@
 			<version>1.2.22</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.rapidark</groupId>
-			<artifactId>rapid-ark-framework</artifactId>
-			<version>${rapidark.version}</version>
+			<groupId>com.abigdreamer.ark</groupId>
+			<artifactId>ark-framework</artifactId>
+			<version>${ark.version}</version>
 		</dependency>
 		<dependency>
   <groupId>joinery</groupId>

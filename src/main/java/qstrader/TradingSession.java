@@ -1,10 +1,11 @@
 package qstrader;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Queue;
 
-import com.github.rapidark.framework.collection.Mapx;
+import com.abigdreamer.ark.framework.collection.Mapx;
 import com.sun.star.uno.RuntimeException;
 
 import qstrader.compliance.AbstractCompliance;
@@ -26,6 +27,7 @@ import qstrader.risk_manager.AbstractRiskManager;
 import qstrader.risk_manager.ExampleRiskManager;
 import qstrader.sentiment_handler.AbstractSentimentHandler;
 import qstrader.statistics.AbstractStatistics;
+import qstrader.statistics.SimpleStatistics;
 import qstrader.statistics.TearsheetStatistics;
 import qstrader.strategy.AbstractStrategy;
 
@@ -37,6 +39,220 @@ import qstrader.strategy.AbstractStrategy;
  * @version V1.0
  */
 public class TradingSession {
+	
+	public static class TradingSessionBuilder {
+		
+		public static TradingSessionBuilder create() {
+			return new TradingSessionBuilder();
+		}
+		
+		private AbstractPriceHandler price_handler;
+		private AbstractStrategy strategy;
+		public TradingSessionBuilder setStrategy(AbstractStrategy strategy) {
+			this.strategy = strategy;
+			return this;
+		}
+
+		public void setCur_time(LocalDateTime cur_time) {
+			this.cur_time = cur_time;
+		}
+
+		public void setEnd_session_time(LocalDate end_session_time) {
+			this.end_session_time = end_session_time;
+		}
+
+		private PortfolioHandler portfolio_handler;
+		private AbstractExecutionHandler execution_handler;
+		private AbstractPositionSizer position_sizer;
+		private AbstractRiskManager risk_manager;
+		private AbstractStatistics statistics;
+		private long equity;
+		AbstractCompliance compliance;
+		
+		Queue<Event> events_queue;
+		LocalDateTime cur_time;
+
+		Config config;
+		List<String> tickers;
+		LocalDate start_date;
+		LocalDate end_date;
+		LocalDate end_session_time;
+		AbstractSentimentHandler sentiment_handler;
+		String title;
+		Object benchmark;
+		String session_type = "backtest";
+		
+		private TradingSessionBuilder() {
+		}
+		
+		private AbstractPositionSizer position_sizer() {
+			if (this.position_sizer == null) {
+				this.position_sizer = new FixedPositionSizer();
+			}
+			return this.position_sizer;
+		}
+		
+		private AbstractRiskManager risk_manager() {
+			if (this.risk_manager == null) {
+				this.risk_manager = new ExampleRiskManager();
+			}
+			return this.risk_manager;
+		}
+		
+		private PortfolioHandler portfolio_handler() {
+			if (this.portfolio_handler == null) {
+				this.portfolio_handler = new PortfolioHandler(
+						this.equity,
+						this.events_queue,
+						this.price_handler,
+						this.position_sizer,
+						this.risk_manager
+	            );
+			}
+			return portfolio_handler;
+		}
+		
+		private AbstractCompliance compliance() {
+			if (this.compliance == null) {
+				this.compliance = new ExampleCompliance(config);
+			}
+			return compliance;
+		}
+		
+		private AbstractExecutionHandler execution_handler() {
+			if (this.execution_handler == null) {
+				this.execution_handler = new IBSimulatedExecutionHandler(
+						this.events_queue,
+						this.price_handler,
+						this.compliance
+		            );
+			}
+			return execution_handler;
+		}
+		
+		private AbstractStatistics statistics() {
+			if (this.statistics == null) {
+//				this.statistics = new TearsheetStatistics(this.config, 
+//						this.portfolio_handler,
+//						this.title, this.benchmark);
+				this.statistics = new SimpleStatistics(config, portfolio_handler.getPortfolio());
+			}
+			return statistics;
+		}
+		
+		public AbstractPriceHandler price_handler() {
+			if (this.price_handler == null && this.session_type == "backtest") {
+	            this.price_handler = new YahooDailyCsvBarPriceHandler(
+	                this.config.CSV_DATA_DIR, this.events_queue,
+	                this.tickers, start_date, end_date
+	            );
+			}
+			return price_handler;
+		}
+		
+		public TradingSession build() {
+			
+			// Use Yahoo Daily Price Handler
+			AbstractPriceHandler price_handler = price_handler();
+			
+			// Use an example Position Sizer
+			AbstractPositionSizer position_sizer = position_sizer();
+		
+			// Use an example Risk Manager
+			AbstractRiskManager risk_manager = risk_manager();
+		
+			// Use the default Portfolio Handler
+			PortfolioHandler portfolio_handler = portfolio_handler();
+		
+			// Use the ExampleCompliance component
+			AbstractCompliance compliance = compliance();
+		
+			// Use a simulated IB Execution Handler
+			AbstractExecutionHandler execution_handler = execution_handler();
+		
+			// Use the default Statistics
+			AbstractStatistics statistics = statistics();
+			
+			TradingSession tradingSession = new TradingSession(config, strategy, tickers, 
+					equity, start_date, end_date, events_queue, 
+					session_type, end_session_time, price_handler, 
+					portfolio_handler, compliance, position_sizer, 
+					execution_handler, risk_manager, statistics, 
+					sentiment_handler, title, benchmark);
+			
+			return tradingSession;
+		}
+
+		public TradingSessionBuilder setTitle(String title) {
+			this.title = title;
+			return this;
+		}
+
+		public TradingSessionBuilder setBenchmark(Object benchmark) {
+			this.benchmark = benchmark;return this;
+		}
+
+		public TradingSessionBuilder setEquity(long equity) {
+			this.equity = equity;return this;
+		}
+
+		public TradingSessionBuilder setConfig(Config config) {
+			this.config = config;return this;
+		}
+
+		public TradingSessionBuilder setEvents_queue(Queue<Event> events_queue) {
+			this.events_queue = events_queue;return this;
+		}
+
+		public TradingSessionBuilder setPrice_handler(AbstractPriceHandler price_handler) {
+			this.price_handler = price_handler;return this;
+		}
+
+		public TradingSessionBuilder setPortfolio_handler(PortfolioHandler portfolio_handler) {
+			this.portfolio_handler = portfolio_handler;return this;
+		}
+
+		public TradingSessionBuilder setCompliance(AbstractCompliance compliance) {
+			this.compliance = compliance;return this;
+		}
+
+		public TradingSessionBuilder setPosition_sizer(AbstractPositionSizer position_sizer) {
+			this.position_sizer = position_sizer;return this;
+		}
+
+		public TradingSessionBuilder setExecution_handler(AbstractExecutionHandler execution_handler) {
+			this.execution_handler = execution_handler;return this;
+		}
+
+		public TradingSessionBuilder setRisk_manager(AbstractRiskManager risk_manager) {
+			this.risk_manager = risk_manager;return this;
+		}
+
+		public TradingSessionBuilder setStatistics(AbstractStatistics statistics) {
+			this.statistics = statistics;return this;
+		}
+
+		public TradingSessionBuilder setSentiment_handler(AbstractSentimentHandler sentiment_handler) {
+			this.sentiment_handler = sentiment_handler;return this;
+		}
+		
+		public TradingSessionBuilder setTickers(List<String> tickers) {
+			this.tickers = tickers;return this;
+		}
+
+		public TradingSessionBuilder setStart_date(LocalDate start_date) {
+			this.start_date = start_date;return this;
+		}
+
+		public TradingSessionBuilder setEnd_date(LocalDate end_date) {
+			this.end_date = end_date;return this;
+		}
+
+		public TradingSessionBuilder setSession_type(String session_type) {
+			this.session_type = session_type;return this;
+		}
+	}
+	
 	private AbstractPriceHandler price_handler;
 	private AbstractStrategy strategy;
 	private PortfolioHandler portfolio_handler;
@@ -48,7 +264,7 @@ public class TradingSession {
 	AbstractCompliance compliance;
 	
 	Queue<Event> events_queue;
-	String cur_time;
+	LocalDateTime cur_time;
 
 	Config config;
 	List<String> tickers;
@@ -120,50 +336,7 @@ public class TradingSession {
 	 * Initialises the necessary classes used within the session.
 	 */
 	public void _config_session() {
-		if (this.price_handler == null && this.session_type == "backtest") {
-            this.price_handler = new YahooDailyCsvBarPriceHandler(
-                this.config.CSV_DATA_DIR, this.events_queue,
-                this.tickers, start_date, end_date
-            );
-		}
 		
-		if (this.position_sizer == null) {
-			this.position_sizer = new FixedPositionSizer();
-		}
-
-		if (this.risk_manager == null) {
-			this.risk_manager = new ExampleRiskManager();
-		}
-
-		if (this.portfolio_handler == null) {
-			this.portfolio_handler = new PortfolioHandler(
-					this.equity,
-					this.events_queue,
-					this.price_handler,
-					this.position_sizer,
-					this.risk_manager
-            );
-		}
-		
-		
-		if (this.compliance == null) {
-			this.compliance = new ExampleCompliance(config);
-		}
-		
-		if (this.execution_handler == null) {
-			this.execution_handler = new IBSimulatedExecutionHandler(
-					this.events_queue,
-					this.price_handler,
-					this.compliance
-	            );
-		}
-		
-		if (this.statistics == null) {
-			this.statistics = new TearsheetStatistics(this.config, 
-					this.portfolio_handler,
-					this.title, this.benchmark);
-		}
-
 	}
 	
 	public boolean _continue_loop_condition(){
@@ -198,14 +371,14 @@ public class TradingSession {
 					this.cur_time = tickerEvent.getTime();
 					
 					// Generate any sentiment events here
-                    if (this.sentiment_handler != null) {
-                    	LocalDate stream_date=LocalDate.parse(this.cur_time);
+					if (this.sentiment_handler != null) {
+						LocalDate stream_date = this.cur_time.toLocalDate();
 						this.sentiment_handler.stream_next(stream_date);
-                    }
+					}
 					
 					this.strategy.calculate_signals(tickerEvent);
 					this.portfolio_handler.update_portfolio_value();
-					this.statistics.update(tickerEvent.getTime(), this.portfolio_handler);
+					this.statistics.update(tickerEvent.getTime(), this.portfolio_handler.getPortfolio());
 				} else if (event.type == EventType.SENTIMENT) {
 					this.strategy.calculate_signals((SentimentEvent) event);
 				} else if (event.type == EventType.SIGNAL) {

@@ -1,7 +1,3 @@
-//from .base import AbstractStrategy
-//
-//from ..event import (SignalEvent, EventType)
-
 package qstrader.strategy;
 
 import java.util.HashMap;
@@ -9,11 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.apache.xpath.operations.Bool;
-
-import qstrader.event.BarEvent;
 import qstrader.event.Event;
-import qstrader.event.EventType;
 import qstrader.event.SignalEvent;
 import qstrader.event.TickerEvent;
 
@@ -42,7 +34,7 @@ public class BuyAndHoldStrategy extends AbstractStrategy {
         String ticker = tickEvent.getTicker();
 		if (tickers.contains(ticker)) {
 			if (!invested.getOrDefault(ticker, false)) {
-				SignalEvent signal = new SignalEvent(ticker, "BOT");
+				SignalEvent signal = new SignalEvent(ticker, "BOT", 100);
 				this.events_queue.offer(signal);
 				invested.put(ticker, true);
 			}

@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.rapidark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.framework.collection.TwoTuple;
 
 import qstrader.Portfolio;
 import qstrader.Position;
@@ -85,20 +85,20 @@ public class TestAmazonGooglePortfolio {
         Assert.assertEquals(PriceParser.display(this.portfolio.getRealised_pnl()), -899.50, Delta);
 
 	}
-}
-
-class PriceHandlerMock extends AbstractTickPriceHandler {
-
-	@Override
-	public void stream_next() {
-	}
 	
-	@Override
-	public TwoTuple<Long, Long> get_best_bid_ask(String ticker) {
-		Map<String, TwoTuple<Long, Long>> prices = new HashMap<>();
-		prices.put("GOOG", new TwoTuple<>(PriceParser.parse(705.46), PriceParser.parse(705.46)));
-		prices.put("AMZN", new TwoTuple<>(PriceParser.parse(564.14), PriceParser.parse(565.14)));
+	class PriceHandlerMock extends AbstractTickPriceHandler {
+
+		@Override
+		public void stream_next() {
+		}
 		
-		return prices.get(ticker);
+		@Override
+		public TwoTuple<Long, Long> get_best_bid_ask(String ticker) {
+			Map<String, TwoTuple<Long, Long>> prices = new HashMap<>();
+			prices.put("GOOG", new TwoTuple<>(PriceParser.parse(705.46), PriceParser.parse(705.46)));
+			prices.put("AMZN", new TwoTuple<>(PriceParser.parse(564.14), PriceParser.parse(565.14)));
+			
+			return prices.get(ticker);
+		}
 	}
 }

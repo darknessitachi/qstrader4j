@@ -107,8 +107,8 @@ public class PortfolioHandler {
         String action = fill_event.getAction();
         String ticker = fill_event.getTicker();
         long quantity = fill_event.getQuantity();
-        double price = fill_event.getPrice();
-        double commission = fill_event.getCommission();
+        long price = fill_event.getPrice();
+        long commission = fill_event.getCommission();
 		// Create or modify the position from the fill info
 		this.portfolio.transact_position(action, ticker, quantity, price, commission);
     }
