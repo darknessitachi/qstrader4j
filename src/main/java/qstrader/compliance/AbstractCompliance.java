@@ -24,5 +24,5 @@ public interface AbstractCompliance {
 	 * @param fill - A FillEvent with information about the
         trade that has just been executed.
 	 */
-    public void record_trade(FillEvent fill);
+    void record_trade(FillEvent fill);
 }
