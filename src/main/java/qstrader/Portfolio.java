@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.abigdreamer.ark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.commons.collection.TwoTuple;
 
 import qstrader.price_handler.AbstractBarPriceHandler;
 import qstrader.price_handler.AbstractPriceHandler;

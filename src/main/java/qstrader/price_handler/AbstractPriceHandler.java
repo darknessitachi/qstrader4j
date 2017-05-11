@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
-import com.abigdreamer.ark.framework.collection.DataTable;
+import com.abigdreamer.ark.commons.collection.DataTable;
 
 import qstrader.event.Event;
 import qstrader.event.TickerEvent;

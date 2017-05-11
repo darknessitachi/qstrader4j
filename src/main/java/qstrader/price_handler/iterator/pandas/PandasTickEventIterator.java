@@ -1,6 +1,6 @@
 package qstrader.price_handler.iterator.pandas;
 
-import com.abigdreamer.ark.framework.collection.DataTable;
+import com.abigdreamer.ark.commons.collection.DataTable;
 
 import qstrader.event.TickEvent;
 import qstrader.price_handler.iterator.AbstractTickEventIterator;

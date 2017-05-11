@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.abigdreamer.ark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.commons.collection.TwoTuple;
 
 import qstrader.Portfolio;
 import qstrader.PortfolioHandler;

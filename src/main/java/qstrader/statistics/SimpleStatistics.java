@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import com.abigdreamer.ark.framework.collection.Mapx;
-import com.abigdreamer.ark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.commons.collection.Mapx;
+import com.abigdreamer.ark.commons.collection.TwoTuple;
 
 import qstrader.Config;
 import qstrader.Portfolio;

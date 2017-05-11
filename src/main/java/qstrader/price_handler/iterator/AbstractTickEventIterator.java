@@ -2,7 +2,7 @@ package qstrader.price_handler.iterator;
 
 import java.time.LocalDateTime;
 
-import com.abigdreamer.ark.framework.collection.DataRow;
+import com.abigdreamer.ark.commons.collection.DataRow;
 
 import qstrader.PriceParser;
 import qstrader.event.TickEvent;

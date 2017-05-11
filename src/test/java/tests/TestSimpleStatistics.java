@@ -9,8 +9,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.abigdreamer.ark.framework.collection.Mapx;
-import com.abigdreamer.ark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.commons.collection.Mapx;
+import com.abigdreamer.ark.commons.collection.TwoTuple;
 
 import qstrader.Config;
 import qstrader.Portfolio;

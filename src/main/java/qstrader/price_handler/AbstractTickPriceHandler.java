@@ -1,6 +1,6 @@
 package qstrader.price_handler;
 
-import com.abigdreamer.ark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.commons.collection.TwoTuple;
 
 import qstrader.event.TickEvent;
 

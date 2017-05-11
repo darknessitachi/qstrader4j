@@ -3,7 +3,7 @@ package qstrader.execution_handler;
 import java.time.LocalDateTime;
 import java.util.Queue;
 
-import com.abigdreamer.ark.framework.collection.TwoTuple;
+import com.abigdreamer.ark.commons.collection.TwoTuple;
 
 import qstrader.PriceParser;
 import qstrader.compliance.AbstractCompliance;

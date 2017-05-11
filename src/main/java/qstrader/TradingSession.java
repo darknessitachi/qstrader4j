@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Queue;
 
-import com.abigdreamer.ark.framework.collection.Mapx;
+import com.abigdreamer.ark.commons.collection.Mapx;
 import com.sun.star.uno.RuntimeException;
 
 import qstrader.compliance.AbstractCompliance;
@@ -28,7 +28,6 @@ import qstrader.risk_manager.ExampleRiskManager;
 import qstrader.sentiment_handler.AbstractSentimentHandler;
 import qstrader.statistics.AbstractStatistics;
 import qstrader.statistics.SimpleStatistics;
-import qstrader.statistics.TearsheetStatistics;
 import qstrader.strategy.AbstractStrategy;
 
 /**

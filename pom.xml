@@ -5,7 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   
   <properties>
-		<ark.version>1.0.0-SNAPSHOT</ark.version>
+		<ark.version>3.0.0-SNAPSHOT</ark.version>
 	</properties>
 
 	<dependencies>
